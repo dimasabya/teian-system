@@ -45,7 +45,7 @@ export default async function DetailsTeianPage({ params }: Props) {
         <TrackingTimeline trackings={teian?.trackings!} />
         <div className="space-y-2 text-xs">
           <div className="flex justify-between items-center">
-            <h2>Attachment</h2>
+            <h2>Attachments</h2>
             <span>view all</span>
           </div>
           <div className="flex gap-2">
