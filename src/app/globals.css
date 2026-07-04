@@ -3,6 +3,31 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --primary: #0047ab;
+  --primary-hover: #003380;
+  --primary-active: #002060;
+
+  --secondary: #e3f2fd;
+  --secondary-hover: #bbdefb;
+  --secondary-active: #90caf9;
+
+  --tertiary: #002366;
+  --tertiary-hover: #001a4d;
+  --tertiary-active: #001033;
+
+  --neutral: #f8f9fa;
+  --neutral-hover: #e9ecef;
+  --neutral-active: #dee2e6;
+
+  --border: #e3e4eb;
+
+  --s: 8px;
+
+  --mobile-primary: #f8f9fb;
+
+  --border-line: #e4e7ea;
+  --bg-border: #ffffff;
 }
 
 @theme inline {
@@ -10,6 +35,31 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-active: var(--secondary-active);
+
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-hover: var(--tertiary-hover);
+  --color-tertiary-active: var(--tertiary-active);
+
+  --color-neutral: var(--neutral);
+  --color-neutral-hover: var(--neutral-hover);
+  --color-neutral-active: var(--neutral-active);
+
+  --color-border: var(--border);
+
+  --text-s: var(--s);
+
+  --color-mobile-primary: var(--mobile-primary);
+
+  --color-border-line: var(--border-line);
+  --color-bg-border: var(--bg-border);
 }
 
 @media (prefers-color-scheme: dark) {

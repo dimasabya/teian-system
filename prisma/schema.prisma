@@ -1,0 +1,220 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+enum Role {
+  EMPLOYEE
+  LEADER
+  TQM
+}
+
+model Departement {
+  id        String   @id @default(uuid())
+
+  name      String   @unique
+
+  users     User[]
+  teians    Teian[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(uuid())
+
+  nik       String   @unique
+  name      String
+  email     String   @unique
+  password  String
+
+  role      Role
+  position  String?
+
+  isActive  Boolean @default(true)
+
+  departementId String?
+  departement Departement? @relation(fields: [departementId], references: [id])
+
+  teians    Teian[]
+  comments   Comment[]
+  approvals  ApprovalHistory[]
+  notifications Notification[]
+  auditLogs  AuditLog[]
+  trackings  TeianTracking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TeianStatus {
+  DRAFT
+  SUBMITTED
+  LEADER_REVIEW
+  TQM_REVIEW
+  APPROVED
+  IMPLEMENTED
+  CLOSED
+  REJECTED
+  REVISION_REQUESTED
+}
+
+enum TrackingStep {
+  SUBMITTED
+  LEADER_REVIEW
+  TQM_REVIEW
+  IMPROVEMENT
+  VERIFICATION
+  COMPLETED
+}
+
+enum TrackingStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+}
+
+model Teian {
+  id            String   @id @default(uuid())
+
+  teianNumber   String?   @unique
+
+  title         String
+  category      String
+  klasifikasi   String
+
+  problem       String
+  improvement   String
+
+  // benefit       String?
+
+  status        TeianStatus @default(DRAFT)
+
+  creatorId     String
+  creator       User @relation(fields: [creatorId], references: [id])
+
+  departementId  String
+  departement    Departement @relation(fields: [departementId], references: [id])
+
+  attachments   Attachment[]
+  comments      Comment[]
+  approvals     ApprovalHistory[]
+  trackings      TeianTracking[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([departementId])
+  @@index([createdAt])
+}
+
+model Attachment {
+  id         String @id @default(uuid())
+
+  imgBefore  String
+  imgAfter   String
+
+  teianId    String
+  teian      Teian @relation(fields: [teianId], references: [id])
+
+  createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id         String @id @default(uuid())
+
+  comment    String
+
+  teianId    String
+  userId     String
+
+  teian      Teian @relation(fields: [teianId], references: [id])
+  user       User @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime @default(now())
+}
+
+enum ApprovalAction {
+  SUBMIT
+  APPROVE
+  REJECT
+  REQUEST_REVISION
+  IMPLEMENT
+  CLOSE
+}
+
+model TeianTracking {
+  id        String @id @default(uuid())
+
+  step       TrackingStep
+  status     TrackingStatus
+
+  note       String?
+
+  teianId    String
+  teian      Teian @relation(fields: [teianId], references: [id])
+
+  createdbyId String
+  createdby   User @relation(fields: [createdbyId], references: [id])
+
+  createdAt  DateTime @default(now())
+
+  @@index([teianId])
+}
+
+model ApprovalHistory {
+  id         String @id @default(uuid())
+
+  action     ApprovalAction
+
+  note       String?
+
+  teianId    String
+  userId     String
+
+  teian      Teian @relation(fields: [teianId], references: [id])
+  user       User @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime @default(now())
+}
+
+model Notification {
+  id         String @id @default(uuid())
+
+  title      String
+  message    String
+
+  isRead     Boolean @default(false)
+
+  userId     String
+  user       User @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id          String @id @default(uuid())
+
+  module      String
+  action      String
+  description String
+
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime @default(now())
+}
