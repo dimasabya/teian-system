@@ -42,7 +42,7 @@ export default function Bottom() {
           </div>
         </Link>
         <Link
-          href="/employee/teian"
+          href="/employee/alert"
           className={`p-2 rounded-md ${isActive("/employee/alert") ? "bg-primary-active text-white" : "hover:bg-primary-hover hover:text-white"}`}
         >
           <div className="text-xs text-center place-items-center w-full">
@@ -52,7 +52,7 @@ export default function Bottom() {
         </Link>
         <Link
           href="/employee/profile"
-          className={`p-2 rounded-md ${isActive("/dashboard/profile") ? "bg-primary-active text-white" : "hover:bg-primary-hover hover:text-white"}`}
+          className={`p-2 rounded-md ${isActive("/employee/profile") ? "bg-primary-active text-white" : "hover:bg-primary-hover hover:text-white"}`}
         >
           <div className="text-xs text-center place-items-center w-full">
             <User />
