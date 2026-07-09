@@ -163,9 +163,10 @@ export async function createTeian(formData: FormData) {
     revalidatePath(`/employee/teian`);
     revalidateTag("my-teian", "max");
     revalidateTag("dashboard-stats", "max");
-    redirect(`/employee/teian`);
   } catch (error) {
     console.error("CREATE TEIAN ERROR:", error);
     throw error;
   }
+
+  redirect(`/employee/teian`);
 }
