@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { getDashboardStats } from "@/lib/teian/getDashboardStatus";
 import { getMyTeian } from "@/lib/teian/getMyTeian";
 import { formatDate } from "@/lib/utils/formatDate";
@@ -12,6 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import CardTeianHome from "./components/CardTeianHome";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -81,24 +81,14 @@ export default async function DashboardPage() {
       <div className="my-2">
         <div className="flex justify-between items-center my-2">
           <h2 className="font-semibold text-sm">Teian Baru</h2>
-          <p className="text-xs text-primary">lihat semua</p>
+          <Link href="/employee/teian" className="text-xs text-primary">
+            lihat semua
+          </Link>
         </div>
         <div className="grid grid-cols-1 gap-2">
           {teianRecent.length > 0 ? (
             teianRecent.map((teian) => (
-              <Link
-                href={`/employee/details-teian/${teian.id}`}
-                className="border border-border-line rounded-lg p-3 text-start text-xs bg-bg-border "
-                key={teian.id}
-              >
-                <div className="flex justify-between items-start gap-2 mb-2">
-                  <p className="flex-1">{teian.title}</p>
-                  <span className="bg-indigo-300 text-center shrink-0 rounded-xl px-2 py-1 text-s text-primary">
-                    {teian.status}
-                  </span>
-                </div>
-                <p>{formatDate(teian.createdAt)}</p>
-              </Link>
+              <CardTeianHome teian={teian} key={teian.id} />
             ))
           ) : (
             <span>Belum ada teian</span>
