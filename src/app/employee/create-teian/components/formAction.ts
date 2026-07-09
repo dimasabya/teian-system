@@ -57,65 +57,121 @@ export async function createTeian(formData: FormData) {
       teianNumber = await generateTeianNumber();
     }
 
-    await prisma.$transaction(async (tx) => {
-      const teian = await tx.teian.create({
-        data: {
-          teianNumber,
-          status,
-          title: formData.get("title") as string,
-          category: formData.get("category") as string,
-          klasifikasi: formData.get("klasifikasi") as string,
-          problem: formData.get("problem") as string,
-          improvement: formData.get("improvement") as string,
-          //   departementId: formData.get("departementId") as string,
-          //   creatorId: session.user.id,
-          creator: {
-            connect: {
-              id: session.user.id,
-            },
-          },
-
-          departement: {
-            connect: {
-              id: user?.departement?.id,
-            },
+    const teian = await prisma.teian.create({
+      data: {
+        teianNumber,
+        status,
+        title: formData.get("title") as string,
+        category: formData.get("category") as string,
+        klasifikasi: formData.get("klasifikasi") as string,
+        problem: formData.get("problem") as string,
+        improvement: formData.get("improvement") as string,
+        //   departementId: formData.get("departementId") as string,
+        //   creatorId: session.user.id,
+        creator: {
+          connect: {
+            id: session.user.id,
           },
         },
-      });
+        departement: {
+          connect: {
+            id: user?.departement?.id,
+          },
+        },
+      },
+    });
 
-      await tx.attachment.create({
+    await prisma.attachment.create({
+      data: {
+        imgBefore: formData.get("beforeImage") as string,
+        imgAfter: formData.get("afterImage") as string,
+        teian: {
+          connect: {
+            id: teian.id,
+          },
+        },
+      },
+    });
+
+    if (status === "SUBMITTED") {
+      await prisma.teianTracking.create({
         data: {
-          imgBefore: formData.get("beforeImage") as string,
-          imgAfter: formData.get("afterImage") as string,
-
+          step: "SUBMITTED",
+          status: "APPROVED",
+          note: "Teian berhasil dikirim ke atasan untuk ditinjau",
           teian: {
             connect: {
               id: teian.id,
             },
           },
-        },
-      });
-
-      if (status === "SUBMITTED") {
-        await tx.teianTracking.create({
-          data: {
-            step: "SUBMITTED",
-            status: "APPROVED",
-            note: "Teian berhasil dikirim ke atasan untuk ditinjau",
-            teian: {
-              connect: {
-                id: teian.id,
-              },
-            },
-            createdby: {
-              connect: {
-                id: session.user.id,
-              },
+          createdby: {
+            connect: {
+              id: session.user.id,
             },
           },
-        });
-      }
-    });
+        },
+      });
+    }
+
+    // await prisma.$transaction(async (tx) => {
+    //   const teian = await tx.teian.create({
+    //     data: {
+    //       teianNumber,
+    //       status,
+    //       title: formData.get("title") as string,
+    //       category: formData.get("category") as string,
+    //       klasifikasi: formData.get("klasifikasi") as string,
+    //       problem: formData.get("problem") as string,
+    //       improvement: formData.get("improvement") as string,
+    //       //   departementId: formData.get("departementId") as string,
+    //       //   creatorId: session.user.id,
+    //       creator: {
+    //         connect: {
+    //           id: session.user.id,
+    //         },
+    //       },
+
+    //       departement: {
+    //         connect: {
+    //           id: user?.departement?.id,
+    //         },
+    //       },
+    //     },
+    //   });
+
+    //   await tx.attachment.create({
+    //     data: {
+    //       imgBefore: formData.get("beforeImage") as string,
+    //       imgAfter: formData.get("afterImage") as string,
+
+    //       teian: {
+    //         connect: {
+    //           id: teian.id,
+    //         },
+    //       },
+    //     },
+    //   });
+
+    //   if (status === "SUBMITTED") {
+    //     await tx.teianTracking.create({
+    //       data: {
+    //         step: "SUBMITTED",
+    //         status: "APPROVED",
+    //         note: "Teian berhasil dikirim ke atasan untuk ditinjau",
+    //         teian: {
+    //           connect: {
+    //             id: teian.id,
+    //           },
+    //         },
+    //         createdby: {
+    //           connect: {
+    //             id: session.user.id,
+    //           },
+    //         },
+    //       },
+    //     });
+    //   }
+    // });
 
     revalidatePath(`/employee/teian`);
     revalidateTag("my-teian", "max");
