@@ -57,7 +57,7 @@ export async function createTeian(formData: FormData) {
       teianNumber = await generateTeianNumber();
     }
 
-    const teian = await prisma.teian.create({
+    await prisma.teian.create({
       data: {
         teianNumber,
         status,
@@ -66,8 +66,7 @@ export async function createTeian(formData: FormData) {
         klasifikasi: formData.get("klasifikasi") as string,
         problem: formData.get("problem") as string,
         improvement: formData.get("improvement") as string,
-        //   departementId: formData.get("departementId") as string,
-        //   creatorId: session.user.id,
+
         creator: {
           connect: {
             id: session.user.id,
@@ -78,40 +77,28 @@ export async function createTeian(formData: FormData) {
             id: user?.departement?.id,
           },
         },
-      },
-    });
 
-    await prisma.attachment.create({
-      data: {
-        imgBefore: formData.get("beforeImage") as string,
-        imgAfter: formData.get("afterImage") as string,
-        teian: {
-          connect: {
-            id: teian.id,
+        attachments: {
+          create: {
+            imgAfter: formData.get("afterImage") as string,
+            imgBefore: formData.get("beforeImage") as string,
           },
         },
-      },
-    });
 
-    if (status === "SUBMITTED") {
-      await prisma.teianTracking.create({
-        data: {
-          step: "SUBMITTED",
-          status: "APPROVED",
-          note: "Teian berhasil dikirim ke atasan untuk ditinjau",
-          teian: {
-            connect: {
-              id: teian.id,
-            },
-          },
-          createdby: {
-            connect: {
-              id: session.user.id,
+        trackings: {
+          create: {
+            step: "SUBMITTED",
+            status: "APPROVED",
+            note: "Teian berhasil dikirim ke atasan untuk ditinjau",
+            createdby: {
+              connect: {
+                id: session.user.id,
+              },
             },
           },
         },
-      });
-    }
+      },
+    });
 
     // await prisma.$transaction(async (tx) => {
     //   const teian = await tx.teian.create({
