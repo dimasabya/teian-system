@@ -93,7 +93,9 @@ export default async function ProfilePage() {
               className="col-span-2 flex items-center gap-6"
             >
               <LogOut className="w-12 h-12 bg-secondary rounded-lg p-2" />
-              <button className="col-span-2 text-sm">Logout</button>
+              <button className="col-span-2 text-sm bg-red-500 w-full text-start">
+                Logout
+              </button>
             </form>
             <ChevronRight className="justify-self-end" />
           </div>

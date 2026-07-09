@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -25,7 +26,16 @@ export default function SubmitTeian({ disable }: Props) {
         disabled={!disable}
         onClick={() => setIsLoading(!isLoading)}
       >
-        {!disable ? "Loading" : !isLoading ? "Submit" : "Submitting..."}
+        {!disable ? (
+          "Loading"
+        ) : !isLoading ? (
+          "Submit"
+        ) : (
+          <span className="flex items-center justify-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Submitting...
+          </span>
+        )}
       </button>
     </div>
   );

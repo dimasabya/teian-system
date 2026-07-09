@@ -1,10 +1,25 @@
+"use client";
+
+import { Loader2 } from "lucide-react";
+import { useFormStatus } from "react-dom";
+
 export default function ButtonSubmitLogin() {
+  const { pending } = useFormStatus();
+
   return (
     <button
       type="submit"
-      className={`w-full rounded-lg bg-primary px-4 py-2 text-primary-foreground active:bg-blue-200 active:text-primary`}
+      disabled={pending}
+      className="w-full rounded-lg bg-primary py-2 text-white disabled:opacity-60"
     >
-      Login
+      {pending ? (
+        <span className="flex items-center justify-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Signing in...
+        </span>
+      ) : (
+        "Login"
+      )}
     </button>
   );
 }
